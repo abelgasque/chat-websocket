@@ -1,4 +1,4 @@
-# Chat Websocket / Webhook
+# Chat Websocket
 
 ## Ambiente com docker-compose
 ``` bash
@@ -7,11 +7,11 @@ docker-compose up -d
 
 ## Imagem Docker Hub
 ``` bash
-docker pull abelgasque/chat-webhook
+docker pull abelgasque/chat-websocket
 ```
 
 ``` bash
-docker run -d --name chat-webhook-container --env-file .env -p 3000:3000 abelgasque/chat-webhook
+docker run -d --name chat-websocket-container --env-file .env -p 3000:3000 abelgasque/chat-websocket
 ```
 
 ### Requisitos
@@ -24,8 +24,8 @@ Certifique-se de ter os seguintes requisitos instalados em seu ambiente de desen
 ### Iniciar ambiente local
 1- Clone o repositório (caso não tenha feito anteriormente):
 ``` bash
-git clone https://github.com/abelgasque/chat-webhook.git
-cd chat-webhook
+git clone https://github.com/abelgasque/chat-websocket.git
+cd chat-websocket
 ```
 
 2- Instale as dependências do projeto:

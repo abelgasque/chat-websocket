@@ -1,4 +1,4 @@
-name: Build and Deploy Chat Webhook Docker Image
+name: Build and Deploy Chat Websocket Docker Image
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-deploy:
-    name: Build Chat Webhook Docker Image
+    name: Build Chat Websocket Docker Image
     runs-on: ubuntu-latest
     environment: production
 
@@ -21,7 +21,7 @@ jobs:
       run: |
         curl -H "Content-Type: application/json" \
         -X POST \
-        -d '{"username": "Bot Docker", "content": "🚀 **Build da imagem Chat Webhook iniciado!**\nRepositório: `${{ github.repository }}`\nBranch/Tag: `${{ github.ref_name }}`"}' \
+        -d '{"username": "Bot Docker", "content": "🚀 **Build da imagem Chat Websocket iniciado!**\nRepositório: `${{ github.repository }}`\nBranch/Tag: `${{ github.ref_name }}`"}' \
         ${{ secrets.DISCORD_WEBHOOK_URL }} || true
 
     - name: Set up Docker Buildx
@@ -36,14 +36,14 @@ jobs:
     - name: Build and push Docker image (branch main)
       if: github.ref == 'refs/heads/main'
       run: |
-        docker build --platform=linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/chat-webhook:latest .
-        docker push ${{ secrets.DOCKER_USERNAME }}/chat-webhook:latest
+        docker build --platform=linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/chat-websocket:latest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/chat-websocket:latest
 
     - name: Build and push Docker image (tagged release)
       if: startsWith(github.ref, 'refs/tags/')
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/chat-webhook:${{ github.ref_name }} .
-        docker push ${{ secrets.DOCKER_USERNAME }}/chat-webhook:${{ github.ref_name }}
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/chat-websocket:${{ github.ref_name }} .
+        docker push ${{ secrets.DOCKER_USERNAME }}/chat-websocket:${{ github.ref_name }}
 
   report-status:
     name: Report Build Status
@@ -57,7 +57,7 @@ jobs:
       run: |
         curl -H "Content-Type: application/json" \
         -X POST \
-        -d '{"username": "Bot Docker", "content": "✅ **Chat Webhook Docker Image Build Sucesso!**\nBranch/Tag: `${{ github.ref_name }}`"}' \
+        -d '{"username": "Bot Docker", "content": "✅ **Chat Websocket Docker Image Build Sucesso!**\nBranch/Tag: `${{ github.ref_name }}`"}' \
         ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     - name: Notify Discord (Failure)
@@ -65,5 +65,5 @@ jobs:
       run: |
         curl -H "Content-Type: application/json" \
         -X POST \
-        -d '{"username": "Bot Docker", "content": "❌ **Falha ao buildar a imagem do Chat Webhook!**\nBranch/Tag: `${{ github.ref_name }}`"}' \
+        -d '{"username": "Bot Docker", "content": "❌ **Falha ao buildar a imagem do Chat Websocket!**\nBranch/Tag: `${{ github.ref_name }}`"}' \
         ${{ secrets.DISCORD_WEBHOOK_URL }}
