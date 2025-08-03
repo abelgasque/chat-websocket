@@ -12,10 +12,10 @@ class WebhookController {
             const redisPrefix = "webhook:waha";
             if (req.body.id) {
                 await redisClient.set(`${redisPrefix}:event:${req.body.id}`, JSON.stringify(req.body));
-                if (req.body.session) {
+                if (req.body.session && req.body.event === "message") {
                     const senderId = req.body.payload.from;
                     const receiverId = req.body.me.id;
-                    const chatKey = `${redisPrefix}:chat:${senderId}:${receiverId}`;
+                    const chatKey = `${redisPrefix}:chat:message:${senderId}:${receiverId}`;
                     await redisClient.zadd(chatKey, req.body.payload.timestamp, req.body.payload.body);
                 }
             }
