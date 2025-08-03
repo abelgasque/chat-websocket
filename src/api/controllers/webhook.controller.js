@@ -9,11 +9,13 @@ import redisClient from '../../configs/redis.config.js';
 class WebhookController {
     async sendMessageWaha(req, res, next) {
         try {
-            const redisPrefix = "waha:webhook";
+            const redisPrefix = "webhook:waha";
             if (req.body.id) {
                 await redisClient.set(`${redisPrefix}:event:${req.body.id}`, JSON.stringify(req.body));
-                if (req.body.me.id && req.body.payload.from) {
-                    const chatKey = `${redisPrefix}:chats:${req.body.me.id}:${req.body.payload.from}`;
+                if (req.body.session) {
+                    const senderId = req.body.payload.from;
+                    const receiverId = req.body.me.id;
+                    const chatKey = `${redisPrefix}:chat:${senderId}:${receiverId}`;
                     await redisClient.zAdd(chatKey, {
                         score: req.body.payload.timestamp,
                         value: req.body.payload.body
