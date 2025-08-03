@@ -3,6 +3,7 @@ import cors from "cors";
 
 import swaggerRoutes from "../api/routes/swagger.routes.js";
 import healthRoutes from "../api/routes/health.routes.js";
+import webhookRoutes from "../api/routes/webhook.routes.js";
 
 const allowedOrigins = process.env.CORS_ORIGINS.split(',');
 
@@ -25,6 +26,7 @@ const createApp = () => {
 
     app.use("/", swaggerRoutes);
     app.use("/api/health", healthRoutes);
+    app.use("/api/webhook", webhookRoutes);
 
     return app;
 };
