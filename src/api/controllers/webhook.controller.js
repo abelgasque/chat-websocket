@@ -10,8 +10,8 @@ class WebhookController {
     async sendMessageWaha(req, res, next) {
         try {
             
-            if (req.body) {
-                await redisClient.set('waha:webhook', req.body);
+            if (req.body.id) {
+                await redisClient.set(`waha:webhook:${req.body.id}`, JSON.stringify(req.body));
             }
 
             res.status(200).json({
