@@ -22,7 +22,7 @@ const router = express.Router();
  *               event:
  *                 type: string
  *                 example: message
- *               chatId:
+ *               id:
  *                 type: string
  *                 example: 559999999999@c.us
  *               from:
