@@ -39,3 +39,7 @@ npm run start
 ```
 
 3- Variáveis de ambiente necessárias estão no arquivo `.env-exemple` e precisa ser renomeado para `.env`.
+
+
+docker build -t chat-websocket .
+docker run -d -p 8081:8081 --name container-chat-websocket chat-websocket
