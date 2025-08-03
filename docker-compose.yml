@@ -1,0 +1,44 @@
+version: '3'
+services:
+  container:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chat-websocket-container
+    environment:
+      NODE_ENV: development
+      NODE_PORT: 8081
+      CORS_ORIGINS: http://localhost:80,http://localhost:4200,http://localhost:3000,http://localhost:8081
+      REDIS_URL: redis://default:default@host.docker.internal:6379
+      RABBITMQ_ENABLE: false
+      RABBITMQ_PROTOCOL: amqp
+      RABBITMQ_HOST: host.docker.internal:5672
+      RABBITMQ_VHOST: /
+      RABBITMQ_USER: admin
+      RABBITMQ_PASSWORD: admin
+      CHAT_API_BASE_URL: http://localhost:8080
+    ports:
+      - "8081:8081"
+    networks:
+      - production
+
+  redis:
+    image: redis:latest
+    platform: linux/amd64
+    command: redis-server --requirepass default
+    container_name: n8n-redis
+    environment:
+      REDIS_USER: default
+      REDIS_PASSWORD: default
+    ports:
+      - "6379:6379"
+    networks:
+      - production
+
+volumes:
+  waha_sessions:
+  waha_media:
+
+networks:
+  production:
+    driver: bridge
