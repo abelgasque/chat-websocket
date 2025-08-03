@@ -16,27 +16,33 @@ const router = express.Router();
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               event:
- *                 type: string
- *                 example: message
- *               id:
- *                 type: string
- *                 example: 559999999999@c.us
- *               from:
- *                 type: string
- *                 example: 559999999999@c.us
- *               type:
- *                 type: string
- *                 example: chat
- *               body:
- *                 type: string
- *                 example: Olá, isso é um teste!
- *               timestamp:
- *                 type: integer
- *                 example: 1691000000
+ *           example:
+ *             id: "evt_01k1rv7y0qfsvk4fpjcyce46ce"
+ *             timestamp: 1754254276642
+ *             event: "message"
+ *             session: "default"
+ *             me:
+ *               id: "554888598227@c.us"
+ *               pushName: "Abel"
+ *               jid: "554888598227:24@s.whatsapp.net"
+ *             payload:
+ *               id: "false_554399542014@c.us_3A80CB0889EE78727451"
+ *               timestamp: 1754254276
+ *               from: "11111111111@c.us"
+ *               fromMe: false
+ *               source: "app"
+ *               body: "Hello world"
+ *               hasMedia: false
+ *               ack: 2
+ *               ackName: "DEVICE"
+ *               _data:
+ *                 Info:
+ *                   PushName: "User test"
+ *                   VerifiedName:
+ *                     Details:
+ *                       verifiedName: "User test"
+ *             environment:
+ *               engine: "GOWS"
  *     responses:
  *       200:
  *         description: Sucesso. A aplicação está em execução.
