@@ -32,6 +32,17 @@ const router = express.Router();
  *               fromMe: false
  *               source: "app"
  *               body: "Hello world"
+ *               hasMedia: false
+ *               ack: 2
+ *               ackName: "DEVICE"
+ *               _data:
+ *                 Info:
+ *                   PushName: "User test"
+ *                   VerifiedName:
+ *                     Details:
+ *                       verifiedName: "User test"
+ *             environment:
+ *               engine: "GOWS"
  *     responses:
  *       200:
  *         description: Sucesso. A aplicação está em execução.
