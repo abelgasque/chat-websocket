@@ -2,7 +2,6 @@ import "dotenv/config";
 import http from 'http';
 
 import app from './configs/http-server.js';
-import connectToAmqp from "./configs/amqp.server.js";
 import { setupWebSocket } from './configs/websocket.server.js';
 
 const port = process.env.NODE_PORT || 9090;
@@ -14,6 +13,4 @@ server.listen(port, '0.0.0.0', () => {
     }
 });
 
-
-await connectToAmqp();
 setupWebSocket(server);

@@ -9,14 +9,8 @@ services:
       NODE_ENV: development
       NODE_PORT: 8081
       CORS_ORIGINS: http://localhost:80,http://localhost:4200,http://localhost:3000,http://localhost:8081
-      REDIS_URL: redis://default:default@host.docker.internal:6379
-      RABBITMQ_ENABLE: false
-      RABBITMQ_PROTOCOL: amqp
-      RABBITMQ_HOST: host.docker.internal:5672
-      RABBITMQ_VHOST: /
-      RABBITMQ_USER: admin
-      RABBITMQ_PASSWORD: admin
       CHAT_API_BASE_URL: http://localhost:8080
+      REDIS_URL: redis://default:default@host.docker.internal:6379
     ports:
       - "8081:8081"
     networks:
