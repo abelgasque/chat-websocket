@@ -16,10 +16,7 @@ class WebhookController {
                     const senderId = req.body.payload.from;
                     const receiverId = req.body.me.id;
                     const chatKey = `${redisPrefix}:chat:${senderId}:${receiverId}`;
-                    await redisClient.zAdd(chatKey, {
-                        score: req.body.payload.timestamp,
-                        value: req.body.payload.body
-                    });
+                    await redisClient.zadd(chatKey, req.body.payload.timestamp, req.body.payload.body);
                 }
             }
 
