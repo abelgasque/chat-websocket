@@ -29,10 +29,6 @@ services:
     networks:
       - production
 
-volumes:
-  waha_sessions:
-  waha_media:
-
 networks:
   production:
     driver: bridge
