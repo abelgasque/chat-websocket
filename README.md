@@ -11,7 +11,7 @@ docker pull abelgasque/chat-websocket
 ```
 
 ``` bash
-docker run -d --name chat-websocket-container --env-file .env -p 3000:3000 abelgasque/chat-websocket
+docker run -d --name chat-websocket-container --env-file .env -p 8081:8081 abelgasque/chat-websocket
 ```
 
 ### Requisitos
