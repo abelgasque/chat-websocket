@@ -1,17 +1,15 @@
 import url from 'url';
-
-import ApiService from "../api/services/api.service.js";
-
-const apiService = new ApiService();
+import redisClient from '../configs/redis.config.js';
 
 export const userConnections = new Map();
 
 export async function handleConnection(ws, req) {
   const params = new URLSearchParams(url.parse(req.url).query);
-  const userId = params.get('userId');
   const token = params.get('token');
+  const senderId = params.get('userId');
+  const receiverId = params.get('receiverId');
 
-  if (!userId) {
+  if (!senderId) {
     ws.send('❌ Conexão recusada: usuário não identificado.');
     ws.close();
     return;
@@ -23,16 +21,26 @@ export async function handleConnection(ws, req) {
     return;
   }
 
-  userConnections.set(userId, ws);
-  console.log(`✅ Usuário ${userId} conectado`);
+  if (!receiverId) {
+    ws.send('❌ Conexão recusada: receiverId não fornecido.');
+    ws.close();
+    return;
+  }
+
+  userConnections.set(senderId, ws);
+  console.log(`✅ Usuário ${senderId} conectado`);
 
   ws.send('👋 Conexão WebSocket autenticada com sucesso!');
 
   ws.on('message', async (payload) => {
-    console.log(`Mensagem recebida de ${userId}: ${payload}`);
+    console.log(`Mensagem recebida de ${senderId}: ${payload}`);
     try {
       const data = JSON.parse(payload);
-      await apiService.sendUserMessage(token, userId, data.toUserId, data.message);
+      await redisClient.rpush(`chat:${senderId}:${receiverId}:messages`, JSON.stringify({
+        to: data.toUserId,
+        message: data.message,
+        timestamp: Date.now()
+      }));
     } catch (err) {
       console.error('Erro ao processar mensagem:', err);
       ws.send('❌ Erro ao processar mensagem');
@@ -40,7 +48,7 @@ export async function handleConnection(ws, req) {
   });
 
   ws.on('close', () => {
-    console.log(`❌ Usuário ${userId} desconectado`);
-    userConnections.delete(userId);
+    console.log(`❌ Usuário ${senderId} desconectado`);
+    userConnections.delete(senderId);
   });
 }
