@@ -20,7 +20,7 @@ services:
     image: redis:latest
     platform: linux/amd64
     command: redis-server --requirepass default
-    container_name: n8n-redis
+    container_name: chat-websocket-redis
     environment:
       REDIS_USER: default
       REDIS_PASSWORD: default

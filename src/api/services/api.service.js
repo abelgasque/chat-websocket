@@ -2,7 +2,7 @@ import { userConnections } from '../../utils/websocket-handler.js';
 
 class ApiService {
 
-    async sendChatMessage(token, senderId, chatId, message) {
+    async sendChatMessage(token, senderId, receiverId, chatId, message) {
         const response = await fetch(`${process.env.CHAT_API_BASE_URL}/v1/api/chat/message`, {
             method: 'POST',
             headers: {
