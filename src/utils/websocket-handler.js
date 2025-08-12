@@ -1,13 +1,14 @@
 import url from 'url';
-import redisClient from '../configs/redis.config.js';
-import apiService from "../api/services/api.service.js";
+import ApiService from "../api/services/api.service.js";
+
+const apiService = new ApiService();
 
 export const userConnections = new Map();
 
 export async function handleConnection(ws, req) {
   const params = new URLSearchParams(url.parse(req.url).query);
   const token = params.get('token');
-  const chatId = params.get('chatId');
+  const userId = params.get('userId');
   
   if (!token) {
     ws.send('❌ Conexão recusada: token não fornecido.');
@@ -15,27 +16,22 @@ export async function handleConnection(ws, req) {
     return;
   }
 
-  if (!chatId) {
-    ws.send('❌ Conexão recusada: chatId não fornecido.');
+  if (!userId) {
+    ws.send('❌ Conexão recusada: userId não fornecido.');
     ws.close();
     return;
   }
 
-  userConnections.set(chatId, ws);
-  console.log(`✅ Chat ${chatId} conectado`);
+  userConnections.set(userId, ws);
+  console.log(`✅ Chat ${userId} conectado`);
 
   ws.send('👋 Conexão WebSocket autenticada com sucesso!');
 
   ws.on('message', async (payload) => {
-    console.log(`Mensagem recebida de ${chatId}: ${payload}`);
+    console.log(`Mensagem recebida de ${userId}`, payload);
     try {
       const data = JSON.parse(payload);
-      await redisClient.rpush(`ws:chat:message:queue`, JSON.stringify({
-        to: data.toUserId,
-        chatId: chatId,
-        message: data.message,
-        timestamp: Date.now()
-      }));
+      await apiService.sendChatMessage(token, userId, data.chatId, data.message);
     } catch (err) {
       console.error('Erro ao processar mensagem:', err);
       ws.send('❌ Erro ao processar mensagem');
@@ -43,7 +39,7 @@ export async function handleConnection(ws, req) {
   });
 
   ws.on('close', () => {
-    console.log(`❌ Usuário ${senderId} desconectado`);
-    userConnections.delete(senderId);
+    console.log(`❌ Usuário ${userId} desconectado`);
+    userConnections.delete(userId);
   });
 }

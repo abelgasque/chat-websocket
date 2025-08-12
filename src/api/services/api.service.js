@@ -2,8 +2,8 @@ import { userConnections } from '../../utils/websocket-handler.js';
 
 class ApiService {
 
-    async sendUserMessage(token, senderId, receiverId, message) {
-        const response = await fetch(`${process.env.CHAT_API_BASE_URL}/v1/api/user/messages`, {
+    async sendChatMessage(token, senderId, chatId, message) {
+        const response = await fetch(`${process.env.CHAT_API_BASE_URL}/v1/api/chat/message`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -11,10 +11,10 @@ class ApiService {
                 'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({
-                senderId: senderId,
-                receiverId: receiverId,
-                message: message,
-            }),
+                name: senderId,
+                chatId: chatId,
+                message: message
+            })
         });
 
         const data = await response.json();
