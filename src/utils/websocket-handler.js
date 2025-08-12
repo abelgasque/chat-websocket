@@ -31,7 +31,7 @@ export async function handleConnection(ws, req) {
     console.log(`Mensagem recebida de ${userId}`, payload);
     try {
       const data = JSON.parse(payload);
-      await apiService.sendChatMessage(token, userId, data.chatId, data.message);
+      await apiService.sendChatMessage(token, userId, data.receiverId, data.chatId, data.message);
     } catch (err) {
       console.error('Erro ao processar mensagem:', err);
       ws.send('❌ Erro ao processar mensagem');
