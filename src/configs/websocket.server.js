@@ -1,5 +1,6 @@
 import { WebSocketServer } from 'ws';
 import Redis from 'ioredis';
+
 import { handleConnection } from '../utils/websocket-handler.js';
 
 const redisClient = new Redis(process.env.REDIS_URL);
@@ -8,19 +9,31 @@ export function setupWebSocket(server) {
   const wss = new WebSocketServer({ server });
 
   wss.on('connection', async (ws, req) => {
-    const clientId = req.url?.split('?id=')[1] || Date.now();
+    const params = new URLSearchParams(url.parse(req.url).query);
+    const token = params.get('token');
+    const userId = params.get('userId');
 
-    console.log(`🔌 Novo cliente conectado: ${clientId}`);
+    if (!token) {
+      ws.send('❌ Conexão recusada: token não fornecido.');
+      ws.close();
+      return;
+    }
 
-    await redisClient.set(`ws:client:${clientId}`, JSON.stringify({ connectedAt: Date.now() }));
+    if (!userId) {
+      ws.send('❌ Conexão recusada: userId não fornecido.');
+      ws.close();
+      return;
+    }
 
-    ws.clientId = clientId;
+    console.log(`🔌 Novo cliente conectado: ${userId}`);
+    await redisClient.set(`ws:client:${userId}`, JSON.stringify({ connectedAt: Date.now() }));
 
-    await handleConnection(ws, req);
+    ws.clientId = userId;
+    await handleConnection(ws, token, userId);
 
     ws.on('close', async () => {
-      await redisClient.del(`ws:client:${clientId}`);
-      console.log(`❌ Cliente desconectado: ${clientId}`);
+      await redisClient.del(`ws:client:${userId}`);
+      console.log(`❌ Cliente desconectado: ${userId}`);
     });
   });
 

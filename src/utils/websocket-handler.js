@@ -5,23 +5,7 @@ const apiService = new ApiService();
 
 export const userConnections = new Map();
 
-export async function handleConnection(ws, req) {
-  const params = new URLSearchParams(url.parse(req.url).query);
-  const token = params.get('token');
-  const userId = params.get('userId');
-  
-  if (!token) {
-    ws.send('❌ Conexão recusada: token não fornecido.');
-    ws.close();
-    return;
-  }
-
-  if (!userId) {
-    ws.send('❌ Conexão recusada: userId não fornecido.');
-    ws.close();
-    return;
-  }
-
+export async function handleConnection(ws, token, userId) {
   userConnections.set(userId, ws);
   console.log(`✅ Chat ${userId} conectado`);
 
