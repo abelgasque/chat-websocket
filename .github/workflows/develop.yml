@@ -1,0 +1,61 @@
+name: Build and Deploy Chat Websocket Docker Image (develop)
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-deploy:
+    name: Build Chat Websocket Docker Image (develop)
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Notify Discord (Build Started)
+      run: |
+        curl -H "Content-Type: application/json" \
+        -X POST \
+        -d '{"username": "Bot Docker", "content": "🚀 **Build da imagem Chat Websocket iniciado!**\nRepositório: `${{ github.repository }}`\nBranch: develop`"}' \
+        ${{ secrets.DISCORD_WEBHOOK_URL }} || true
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image (branch develop)
+      if: github.ref == 'refs/heads/develop'
+      run: |
+        docker build --platform=linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/chat-websocket:develop .
+        docker push ${{ secrets.DOCKER_USERNAME }}/chat-websocket:develop
+
+  report-status:
+    name: Report Build Status
+    needs: build-deploy
+    environment: production
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Notify Discord (Success)
+      if: success()
+      run: |
+        curl -H "Content-Type: application/json" \
+        -X POST \
+        -d '{"username": "Bot Docker", "content": "✅ **Chat Websocket Docker Image Build Sucesso!**\nBranch: develop"}' \
+        ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    - name: Notify Discord (Failure)
+      if: failure()
+      run: |
+        curl -H "Content-Type: application/json" \
+        -X POST \
+        -d '{"username": "Bot Docker", "content": "❌ **Falha ao buildar a imagem do Chat Websocket!**\nBranch: develop"}' \
+        ${{ secrets.DISCORD_WEBHOOK_URL }}

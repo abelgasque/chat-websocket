@@ -14,10 +14,7 @@ class WebhookController {
     async sendMessageWaha(req, res, next) {
         try {
             this.service.sendMessage(req.body);
-            res.status(200).json({
-                message: "New event received",
-                body: req.body
-            });
+            res.status(200).json({ message: "New event received" });
         } catch (error) {
             next(error);
         }
