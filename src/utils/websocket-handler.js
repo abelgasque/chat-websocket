@@ -1,19 +1,13 @@
 import url from 'url';
 import redisClient from '../configs/redis.config.js';
+import apiService from "../api/services/api.service.js";
 
 export const userConnections = new Map();
 
 export async function handleConnection(ws, req) {
   const params = new URLSearchParams(url.parse(req.url).query);
   const token = params.get('token');
-  const senderId = params.get('userId');
-  const receiverId = params.get('receiverId');
-
-  if (!senderId) {
-    ws.send('❌ Conexão recusada: usuário não identificado.');
-    ws.close();
-    return;
-  }
+  const chatId = params.get('chatId');
   
   if (!token) {
     ws.send('❌ Conexão recusada: token não fornecido.');
@@ -21,23 +15,24 @@ export async function handleConnection(ws, req) {
     return;
   }
 
-  if (!receiverId) {
-    ws.send('❌ Conexão recusada: receiverId não fornecido.');
+  if (!chatId) {
+    ws.send('❌ Conexão recusada: chatId não fornecido.');
     ws.close();
     return;
   }
 
-  userConnections.set(senderId, ws);
-  console.log(`✅ Usuário ${senderId} conectado`);
+  userConnections.set(chatId, ws);
+  console.log(`✅ Chat ${chatId} conectado`);
 
   ws.send('👋 Conexão WebSocket autenticada com sucesso!');
 
   ws.on('message', async (payload) => {
-    console.log(`Mensagem recebida de ${senderId}: ${payload}`);
+    console.log(`Mensagem recebida de ${chatId}: ${payload}`);
     try {
       const data = JSON.parse(payload);
-      await redisClient.rpush(`chat:${senderId}:${receiverId}:messages`, JSON.stringify({
+      await redisClient.rpush(`ws:chat:message:queue`, JSON.stringify({
         to: data.toUserId,
+        chatId: chatId,
         message: data.message,
         timestamp: Date.now()
       }));
