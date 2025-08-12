@@ -11,7 +11,7 @@ class ApiService {
                 'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({
-                name: senderId,
+                senderId: senderId,
                 chatId: chatId,
                 message: message
             })
