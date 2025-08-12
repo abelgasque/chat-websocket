@@ -1,4 +1,3 @@
-import url from 'url';
 import ApiService from "../api/services/api.service.js";
 
 const apiService = new ApiService();
