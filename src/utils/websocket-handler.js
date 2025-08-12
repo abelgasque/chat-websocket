@@ -22,7 +22,7 @@ export async function handleConnection(ws, token, userId) {
       const toUserSocket = userConnections.get(data.receiverId);
       if (toUserSocket && toUserSocket.readyState === WebSocket.OPEN) {
         console.log(`📩 Mensagem enviada para o usuário ${data.receiverId}:`, response);
-        toUserSocket.send(response);
+        toUserSocket.send(JSON.stringify(response));
       } else {
         ws.send(`❌ Usuário ${data.receiverId} não está conectado.`);
       }
